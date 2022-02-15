@@ -1,0 +1,107 @@
+Module Program
+    Dim Title As String
+    Dim Author_Artist As String
+    Dim ItemID As Integer
+    Class LibraryItem
+        Private OnLoan As Boolean = False
+        Private DueDate As Date = Today
+        Public Sub Create(ByVal t As String, ByVal a As String, ByVal ID As Integer)
+            Title = t
+            Author_Artist = a
+            ItemID = ID
+        End Sub
+        Public Function GetTitle() As String
+            Return (Title)
+        End Function
+        Public Function GetAuthor_Artist() As String
+            Return (Author_Artist)
+        End Function
+        Public Function GetItemID() As Integer
+            Return (ItemID)
+        End Function
+        Public Function GetOnLoan() As Boolean
+            Return (OnLoan)
+        End Function
+        Public Function GetDueDate() As Date
+            Return (DueDate)
+        End Function
+        Public Sub Borrowing()
+            OnLoan = True
+            DueDate = DateAdd(DateInterval.Day, 21, Today()) '3 weeks from today
+        End Sub
+        Public Sub Returning()
+            OnLoan = False
+        End Sub
+        Overridable Sub PrintDetails()
+            Console.WriteLine(Title & “; ” & Author_Artist & ";" & ItemID & “; ” & OnLoan & “; ” & DueDate)
+        End Sub
+    End Class
+    Class Book
+        Inherits LibraryItem
+        Private IsRequested As Boolean
+        Public Sub New(ByVal t As String, ByVal a As String, ByVal ID As Integer)
+        End Sub
+        Public Function GetIsRequested() As Boolean
+            Return (IsRequested)
+        End Function
+        Public Sub SetIsRequested()
+            IsRequested = True
+        End Sub
+        Public Overrides Sub PrintDetails()
+            MyBase.PrintDetails()
+            Console.WriteLine("IsRequested: " & IsRequested)
+        End Sub
+    End Class
+
+    Class CD
+        Inherits LibraryItem
+        Private Genre As String = “”
+        Public Sub New(ByVal t As String, ByVal a As String, ByVal ID As Integer)
+        End Sub
+        Public Function GetGenre() As String
+            Return (Genre)
+        End Function
+        Public Sub SetGenre(ByVal g As String)
+            Genre = g
+        End Sub
+        Public Overrides Sub PrintDetails()
+            MyBase.PrintDetails()
+            Console.WriteLine("Genre: " & Genre)
+        End Sub
+    End Class
+
+    Sub main()
+        Dim choice As Integer
+        Do
+            Console.WriteLine("What would you like to do?")
+            choice = Console.ReadLine()
+            Select Case choice
+                Case = 1
+                Case = 2
+                    Console.WriteLine("Please enter book title: ")
+                    Title = Console.ReadLine()
+                    Console.WriteLine("Please enter book author: ")
+                    Author_Artist = Console.ReadLine()
+                    Console.WriteLine("Please enter book ID: ")
+                    ItemID = Console.ReadLine()
+                    Dim book1 As New Book(Title, Author_Artist, ItemID)
+                    book1.PrintDetails()
+                Case = 3
+                    Console.WriteLine("Please enter CD title: ")
+                    Title = Console.ReadLine()
+                    Console.WriteLine("Please enter CD Artist: ")
+                    Author_Artist = Console.ReadLine()
+                    Console.WriteLine("Please enter CD ID: ")
+                    ItemID = Console.ReadLine()
+                    Dim cd1 As New CD(Title, Author_Artist, ItemID)
+                    cd1.PrintDetails()
+                Case = 4
+                    Console.WriteLine("Which book would you like to borrow?")
+                    ItemID = Console.ReadLine()
+
+            End Select
+        Loop Until choice = 99
+
+    End Sub
+End Module
+
