@@ -2,6 +2,10 @@ Module Program
     Dim Title As String
     Dim Author_Artist As String
     Dim ItemID As Integer
+    Dim BookNum, CDNum, AccountNum As Integer
+    Private NewBook(50) As Books
+    Private NewCD(50) As CD
+    Private NewBorrower(50) As Account
     Class LibraryItem
         Private OnLoan As Boolean = False
         Private DueDate As Date = Today
@@ -9,6 +13,18 @@ Module Program
             Title = t
             Author_Artist = a
             ItemID = ID
+        End Sub
+        Public Sub AddBook(t As String, a As String, ID As Integer)
+            BookNum = BookNum + 1
+            NewBook(BookNum) = New Books(t, a, ID)
+        End Sub
+        Public Sub AddCD(t As String, a As String, ID As Integer, g As String)
+            CDNum = CDNum + 1
+            NewCD(CDNum) = New CD(t, a, ID, g)
+        End Sub
+        Public Sub AddBorrower(n As String, ic As Integer)
+            AccountNum = AccountNum + 1
+            NewBorrower(AccountNum) = New Account(n, ic)
         End Sub
         Public Function GetTitle() As String
             Return (Title)
@@ -36,10 +52,13 @@ Module Program
             Console.WriteLine(Title & “; ” & Author_Artist & ";" & ItemID & “; ” & OnLoan & “; ” & DueDate)
         End Sub
     End Class
-    Class Book
+    Class Books
         Inherits LibraryItem
         Private IsRequested As Boolean
         Public Sub New(ByVal t As String, ByVal a As String, ByVal ID As Integer)
+            Title = t
+            Author_Artist = a
+            ItemID = ID
         End Sub
         Public Function GetIsRequested() As Boolean
             Return (IsRequested)
@@ -56,7 +75,11 @@ Module Program
     Class CD
         Inherits LibraryItem
         Private Genre As String = “”
-        Public Sub New(ByVal t As String, ByVal a As String, ByVal ID As Integer)
+        Public Sub New(ByVal t As String, ByVal a As String, ByVal ID As Integer, g As String)
+            Title = t
+            Author_Artist = a
+            ItemID = ID
+            Genre = g
         End Sub
         Public Function GetGenre() As String
             Return (Genre)
@@ -69,14 +92,38 @@ Module Program
             Console.WriteLine("Genre: " & Genre)
         End Sub
     End Class
+    Class Account
+        Private Name As String
+        Private NRIC As Integer
+        Public Sub New(n As String, ic As Integer)
+            Name = n
+            NRIC = ic
+        End Sub
+        Overridable Sub PrintDetails()
+            Console.WriteLine("Account created!Welcome " & Name)
+        End Sub
+    End Class
 
     Sub main()
         Dim choice As Integer
+        Dim genre As String
+        Dim Name As String
+        Dim NRIC As Integer
+        Dim myLibrary As New LibraryItem
+        BookNum = 0
+        CDNum = 0
+        AccountNum = 0
         Do
-            Console.WriteLine("What would you like to do?")
+            Console.WriteLine("Enter your menu choice: ")
             choice = Console.ReadLine()
             Select Case choice
                 Case = 1
+                    Console.WriteLine("Please enter your name: ")
+                    Name = Console.ReadLine()
+                    Console.WriteLine("Please enter your NRIC: ")
+                    NRIC = Console.ReadLine()
+                    myLibrary.AddBorrower(Name, NRIC)
+                    NewBorrower(AccountNum).PrintDetails()
                 Case = 2
                     Console.WriteLine("Please enter book title: ")
                     Title = Console.ReadLine()
@@ -84,8 +131,8 @@ Module Program
                     Author_Artist = Console.ReadLine()
                     Console.WriteLine("Please enter book ID: ")
                     ItemID = Console.ReadLine()
-                    Dim book1 As New Book(Title, Author_Artist, ItemID)
-                    book1.PrintDetails()
+                    myLibrary.AddBook(Title, Author_Artist, ItemID)
+                    NewBook(BookNum).PrintDetails()
                 Case = 3
                     Console.WriteLine("Please enter CD title: ")
                     Title = Console.ReadLine()
@@ -93,15 +140,71 @@ Module Program
                     Author_Artist = Console.ReadLine()
                     Console.WriteLine("Please enter CD ID: ")
                     ItemID = Console.ReadLine()
-                    Dim cd1 As New CD(Title, Author_Artist, ItemID)
-                    cd1.PrintDetails()
+                    Console.WriteLine("Please enter CD genre: ")
+                    genre = Console.ReadLine()
+                    MyLibrary.AddCD(Title, Author_Artist, ItemID, genre)
+                    NewCD(CDNum).PrintDetails()
                 Case = 4
                     Console.WriteLine("Which book would you like to borrow?")
-                    ItemID = Console.ReadLine()
-
+                    Title = Console.ReadLine()
+                    For x = 1 To BookNum
+                        If Title = NewBook(x).GetTitle Then
+                            NewBook(x).Borrowing()
+                            NewBook(x).PrintDetails()
+                            Console.WriteLine("Book has been successfully borrowed, please return it on time.")
+                        End If
+                    Next
+                Case = 5
+                    Console.WriteLine("Which book are you returning?")
+                    Title = Console.ReadLine()
+                    For x = 1 To BookNum
+                        If Title = NewBook(x).GetTitle Then
+                            NewBook(x).Returning()
+                            NewBook(x).PrintDetails()
+                            Console.WriteLine("Book has been successfully returned, thank you for your cooperation.")
+                        End If
+                    Next
+                Case = 6
+                    Console.WriteLine("Which CD would you like to borrow?")
+                    Title = Console.ReadLine()
+                    For x = 1 To CDNum
+                        If Title = NewCD(x).GetTitle Then
+                            NewCD(x).Borrowing()
+                            NewCD(x).PrintDetails()
+                            Console.WriteLine("CD has been successfully borrowed, please return it on time.")
+                        End If
+                    Next
+                Case = 7
+                    Console.WriteLine("Which CD are you returning?")
+                    Title = Console.ReadLine()
+                    For x = 1 To CDNum
+                        If Title = NewCD(x).GetTitle Then
+                            NewCD(x).Returning()
+                            NewCD(x).PrintDetails()
+                            Console.WriteLine("CD has been successfully returned, thank you for your cooperation.")
+                        End If
+                    Next
+                Case = 8
+                    Console.WriteLine("Which book are you requesting for?")
+                    Title = Console.ReadLine()
+                    For x = 1 To BookNum
+                        If Title = NewBook(x).GetTitle Then
+                            NewBook(x).SetIsRequested()
+                            NewBook(x).PrintDetails()
+                            Console.WriteLine("Book has been successfully requested.")
+                        End If
+                    Next
+                Case = 9
+                    For x = 1 To BookNum
+                        NewBook(x).PrintDetails()
+                    Next
+                    For x = 1 To CDNum
+                        NewCD(x).PrintDetails()
+                    Next
             End Select
         Loop Until choice = 99
 
     End Sub
 End Module
+
 
